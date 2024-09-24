@@ -64,9 +64,22 @@ fun PedidosScreen(
         produtos = produtosDAO.listarProdutos()
         filteredPedidos = pedidos
     }
-        
-    val proximoIdPedido = if (pedidos.isEmpty()) 1 else pedidos.size + 1
-        
+
+    fun checkIDExists(id: String): Boolean {
+        return pedidos.any { it.idPedido == id }
+    }
+
+    fun generateNextId(): String {
+        var nextId = (pedidos.size + 1).toString()
+        while (checkIDExists(nextId)) {
+            nextId = (nextId.toInt() + 1).toString()
+        }
+        return nextId
+    }
+
+    val proximoIdPedido = generateNextId()
+
+
     fun clearFields() {
         dataSelecionada = dateFormatter.format(Calendar.getInstance().time)
         clienteSelecionado = ""

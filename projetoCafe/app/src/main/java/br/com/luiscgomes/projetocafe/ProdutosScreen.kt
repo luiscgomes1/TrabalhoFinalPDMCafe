@@ -52,7 +52,6 @@ fun ProdutosScreen(navController: NavController, produtosDAO: ProdutosDAO) {
         filteredProdutos = produtos
     }
 
-    val proximoIdProduto = if (produtos.isEmpty()) 1 else produtos.size + 1
 
     val tiposDeGrao = listOf("Arábica do Cerrado", "Conilon")
     val pontosDaTorra = listOf("Média", "Forte")
@@ -66,6 +65,22 @@ fun ProdutosScreen(navController: NavController, produtosDAO: ProdutosDAO) {
         editingProduto = null
 
     }
+
+    fun checkIDExists(id: String): Boolean {
+        return produtos.any { it.id_produto == id }
+    }
+
+
+    fun generateNextId(): String {
+        var nextId = (produtos.size + 1).toString()
+        while (checkIDExists(nextId)) {
+            nextId = (nextId.toInt() + 1).toString()
+        }
+        return nextId
+    }
+
+    val proximoIdProduto = generateNextId()
+
 
     fun validateFields(): Boolean {
         return tipoDoGraoSelecionado.isNotBlank() &&
@@ -216,18 +231,18 @@ fun ProdutosScreen(navController: NavController, produtosDAO: ProdutosDAO) {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        TextField(
-                            value = descricao,
-                            onValueChange = {
-                                if (it.text.all { char -> char.isLetter() || char.isWhitespace() || char in "áéíóúÁÉÍÓÚãõÃÕâêîôûÂÊÎÔÛçÇ" }) {
-                                    descricao = it
-                                }
-                            },
-                            label = { Text("Descrição/Nome do Produto:") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                        )
+                                    TextField(
+                                        value = descricao,
+                                        onValueChange = {
+                                            if (it.text.all { char -> char.isLetter() || char.isWhitespace() || char in "áéíóúÁÉÍÓÚãõÃÕâêîôûÂÊÎÔÛçÇ" }) {
+                                                descricao = it
+                                            }
+                                        },
+                                        label = { Text("Descrição/Nome do Produto:") },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp)
+                                    )
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -437,11 +452,19 @@ fun ProdutosScreen(navController: NavController, produtosDAO: ProdutosDAO) {
                         }
                     }
                 ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Confirmar"
+                    )
                     Text("Confirmar")
                 }
             },
             dismissButton = {
                 Button(onClick = { showConfirmDialog = false }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Cancelar"
+                    )
                     Text("Cancelar")
                 }
             }

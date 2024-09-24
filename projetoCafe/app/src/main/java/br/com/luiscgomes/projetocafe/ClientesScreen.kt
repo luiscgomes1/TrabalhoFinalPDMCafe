@@ -57,6 +57,10 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
         editingCliente = null
     }
 
+    fun checkCPFExists(cpf: String): Boolean {
+        return clientes.any { it.cpf == cpf }
+    }
+
     fun validateFields(): Boolean {
         return cpf.text.isNotBlank() &&
                 nome.text.isNotBlank() &&
@@ -71,9 +75,23 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
             return
         }
 
+        val cpfNumerico = cpf.text.filter { it.isDigit() }
+        val cpfExists = checkCPFExists(cpfNumerico)
+
+        if (editingCliente == null && cpfExists) {
+            Toast.makeText(context, "CPF já cadastrado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (editingCliente != null && editingCliente!!.cpf != cpfNumerico && cpfExists) {
+            Toast.makeText(context, "Não é possível alterar para um CPF já cadastrado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         showConfirmDialog = true
         confirmDialogType = if (editingCliente == null) "Adicionar" else "Salvar"
     }
+
 
     fun confirmAddOrUpdateCliente() {
         val cliente = Cliente(

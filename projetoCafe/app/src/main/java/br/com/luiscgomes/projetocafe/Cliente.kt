@@ -7,6 +7,7 @@ class Cliente(cpf: String, nome: String, telefone: String, endereco: String, ins
     var telefone: String
     var endereco: String
     var instagram: String
+    var status: String
 
     init {
         this.cpf = cpf
@@ -14,5 +15,6 @@ class Cliente(cpf: String, nome: String, telefone: String, endereco: String, ins
         this.telefone = telefone
         this.endereco = endereco
         this.instagram = instagram
+        this.status = "Ativo"
     }
 }

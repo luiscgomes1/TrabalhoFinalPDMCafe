@@ -46,7 +46,8 @@ class ClientesDAO {
 
     suspend fun deletarCliente(cpf: String) {
         withContext(Dispatchers.IO) {
-            clientesCollection.document(cpf).delete().await()
+            val clienteRef = clientesCollection.document(cpf)
+            clienteRef.update("status", "Inativo").await()
         }
     }
 

@@ -59,10 +59,15 @@ fun PedidosScreen(
     val context = LocalContext.current
         
     LaunchedEffect(Unit) {
-        pedidos = pedidosDAO.listarPedidos()
-        clientes = clientesDAO.listarClientes()
-        produtos = produtosDAO.listarProdutos()
-        filteredPedidos = pedidos
+        try {
+            pedidos = pedidosDAO.listarPedidos()
+            clientes = clientesDAO.listarClientes()
+            produtos = produtosDAO.listarProdutos()
+            filteredPedidos = pedidos
+            clientes = clientes.filter { it.status == "Ativo" }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Erro ao carregar os dados", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun checkIDExists(id: String): Boolean {

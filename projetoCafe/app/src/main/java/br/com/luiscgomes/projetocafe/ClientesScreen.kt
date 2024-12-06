@@ -39,12 +39,22 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
     var confirmDialogType by remember { mutableStateOf("") }
     var clienteToBeDeleted by remember { mutableStateOf<Cliente?>(null) }
 
+    
+
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        clientes = clientesDAO.listarClientes()
-        filteredClientes = clientes
+        try {
+            clientes = clientesDAO.listarClientes()
+            clientes = clientes.filter { it.status == "Ativo" }
+            filteredClientes = clientes
+        } catch (e: Exception) {
+            Toast.makeText(context, "Erro ao carregar clientes. Tente novamente mais tarde.", Toast.LENGTH_SHORT).show()
+        }
+        
     }
+
+    
 
     val listState = rememberLazyListState()
 
@@ -114,7 +124,7 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
                     Toast.makeText(context, "Cliente atualizado", Toast.LENGTH_SHORT).show()
                 }
             }
-            clientes = clientesDAO.listarClientes()
+            clientes = clientesDAO.listarClientes().filter { it.status == "Ativo" }
             filteredClientes = clientes
             withContext(Dispatchers.Main) {
                 clearFields()
@@ -133,7 +143,7 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
         clienteToBeDeleted?.let { cliente ->
             CoroutineScope(Dispatchers.IO).launch {
                 clientesDAO.deletarCliente(cliente.cpf)
-                clientes = clientesDAO.listarClientes()
+                clientes = clientesDAO.listarClientes().filter { it.status == "Ativo" }
                 filteredClientes = clientes
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Cliente excluído", Toast.LENGTH_SHORT).show()

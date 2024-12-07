@@ -16,7 +16,8 @@ class ClientesDAO {
                 "nome" to cliente.nome,
                 "telefone" to cliente.telefone,
                 "endereco" to cliente.endereco,
-                "instagram" to cliente.instagram
+                "instagram" to cliente.instagram,
+                "status" to cliente.status
             )
             clientesCollection.document(cliente.cpf).set(data).await()
         }
@@ -31,7 +32,8 @@ class ClientesDAO {
                     doc.getString("nome")!!,
                     doc.getString("telefone")!!,
                     doc.getString("endereco")!!,
-                    doc.getString("instagram")!!
+                    doc.getString("instagram")!!,
+                    doc.getString("status")!!
                 )
             }
         }

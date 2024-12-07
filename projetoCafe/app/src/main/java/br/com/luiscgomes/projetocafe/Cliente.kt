@@ -1,6 +1,6 @@
 package br.com.luiscgomes.projetocafe
 
-class Cliente(cpf: String, nome: String, telefone: String, endereco: String, instagram: String) {
+class Cliente(cpf: String, nome: String, telefone: String, endereco: String, instagram: String, status: String) {
 
     var cpf: String
     var nome: String
@@ -15,6 +15,6 @@ class Cliente(cpf: String, nome: String, telefone: String, endereco: String, ins
         this.telefone = telefone
         this.endereco = endereco
         this.instagram = instagram
-        this.status = "Ativo"
+        this.status = status
     }
 }

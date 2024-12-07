@@ -1,5 +1,6 @@
 package br.com.luiscgomes.projetocafe
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -23,6 +24,7 @@ import kotlinx.coroutines.*
 @Composable
 fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
     var clientes by remember { mutableStateOf(emptyList<Cliente>()) }
+    var clientesAtivos by remember { mutableStateOf(emptyList<Cliente>()) }
     var filteredClientes by remember { mutableStateOf(emptyList<Cliente>()) }
     var isFiltering by remember { mutableStateOf(false) }
     var showSearchDialog by remember { mutableStateOf(false) }
@@ -45,8 +47,7 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
 
     LaunchedEffect(Unit) {
         try {
-            clientes = clientesDAO.listarClientes()
-            clientes = clientes.filter { it.status == "Ativo" }
+            clientes = clientesDAO.listarClientes().filter { it.status == "Ativo" }
             filteredClientes = clientes
         } catch (e: Exception) {
             Toast.makeText(context, "Erro ao carregar clientes. Tente novamente mais tarde.", Toast.LENGTH_SHORT).show()
@@ -109,7 +110,8 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
             nome = nome.text,
             telefone = telefone.text.filter { it.isDigit() },
             endereco = endereco.text,
-            instagram = instagram.text
+            instagram = instagram.text,
+            status = "Ativo"
         )
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -176,7 +178,7 @@ fun ClientesScreen(navController: NavController, clientesDAO: ClientesDAO) {
     }
 
     fun resetFilter() {
-        filteredClientes = clientes
+        filteredClientes = clientesAtivos
         isFiltering = false
         cpfBusca = TextFieldValue()
     }
